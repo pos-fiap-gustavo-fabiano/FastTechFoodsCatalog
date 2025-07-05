@@ -1,33 +1,33 @@
 # Menu Service – Fast Food Delivery (PostgreSQL Example)
 
-Este documento apresenta exemplos de endpoints REST para o serviço de Menu de uma aplicação Fast Food Delivery, utilizando PostgreSQL como banco de dados.
+This document presents REST endpoint examples for the Menu service of a Fast Food Delivery application, using PostgreSQL as the database.
 
 ---
 
 ## Endpoints
 
-### 1. Listar todos produtos
+### 1. List all products
 **GET /api/menu**
 
-**Resposta:**
+**Response:**
 ```json
 [
   {
     "id": 1,
     "nome": "Cheeseburger",
-    "descricao": "Hambúrguer com queijo, alface, tomate e molho especial.",
+    "descricao": "Burger with cheese, lettuce, tomato and special sauce.",
     "preco": 18.50,
     "disponibilidade": true,
-    "tipo": "Lanche",
+    "tipo": "Main Course",
     "data_criacao": "2025-07-05T12:00:00Z"
   },
   {
     "id": 2,
-    "nome": "Batata Frita Média",
-    "descricao": "Porção média de batata frita crocante.",
+    "nome": "Medium French Fries",
+    "descricao": "Medium portion of crispy french fries.",
     "preco": 8.00,
     "disponibilidade": true,
-    "tipo": "Acompanhamento",
+    "tipo": "Side Dish",
     "data_criacao": "2025-07-05T12:02:00Z"
   }
 ]
@@ -35,105 +35,105 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 
 ---
 
-### 2. Detalhes de um produto
+### 2. Product details
 **GET /api/menu/{id}**
 
-**Resposta (200 OK):**
+**Response (200 OK):**
 ```json
 {
   "id": 1,
   "nome": "Cheeseburger",
-  "descricao": "Hambúrguer com queijo, alface, tomate e molho especial.",
+  "descricao": "Burger with cheese, lettuce, tomato and special sauce.",
   "preco": 18.50,
   "disponibilidade": true,
-  "tipo": "Lanche",
+  "tipo": "Main Course",
   "data_criacao": "2025-07-05T12:00:00Z"
 }
 ```
-**Resposta se não encontrado:**
+**Response if not found:**
 ```json
 {
-  "error": "Produto não encontrado"
+  "error": "Product not found"
 }
 ```
 
 ---
 
-### 3. Cadastrar produto
+### 3. Create product
 **POST /api/menu**
 
 **Request Body:**
 ```json
 {
-  "nome": "Refrigerante 350ml",
-  "descricao": "Coca-cola, lata 350ml.",
+  "nome": "Soda 350ml",
+  "descricao": "Coca-cola, 350ml can.",
   "preco": 6.00,
   "disponibilidade": true,
-  "tipo": "Bebida"
+  "tipo": "Beverage"
 }
 ```
 
-**Resposta (201 Created):**
+**Response (201 Created):**
 ```json
 {
   "id": 3,
-  "nome": "Refrigerante 350ml",
-  "descricao": "Coca-cola, lata 350ml.",
+  "nome": "Soda 350ml",
+  "descricao": "Coca-cola, 350ml can.",
   "preco": 6.00,
   "disponibilidade": true,
-  "tipo": "Bebida",
+  "tipo": "Beverage",
   "data_criacao": "2025-07-05T14:00:00Z"
 }
 ```
 
 ---
 
-### 4. Atualizar produto
+### 4. Update product
 **PUT /api/menu/{id}**
 
 **Request Body:**
 ```json
 {
-  "nome": "Batata Frita Grande",
-  "descricao": "Porção grande de batata frita crocante.",
+  "nome": "Large French Fries",
+  "descricao": "Large portion of crispy french fries.",
   "preco": 12.00,
   "disponibilidade": true,
-  "tipo": "Acompanhamento"
+  "tipo": "Side Dish"
 }
 ```
 
-**Resposta (200 OK):**
+**Response (200 OK):**
 ```json
 {
   "id": 2,
-  "nome": "Batata Frita Grande",
-  "descricao": "Porção grande de batata frita crocante.",
+  "nome": "Large French Fries",
+  "descricao": "Large portion of crispy french fries.",
   "preco": 12.00,
   "disponibilidade": true,
-  "tipo": "Acompanhamento",
+  "tipo": "Side Dish",
   "data_criacao": "2025-07-05T12:02:00Z"
 }
 ```
 
 ---
 
-### 5. Remover produto
+### 5. Delete product
 **DELETE /api/menu/{id}**
 
-**Resposta (204 No Content):**
-_Sem conteúdo._
+**Response (204 No Content):**
+_No content._
 
-**Resposta se não encontrado:**
+**Response if not found:**
 ```json
 {
-  "error": "Produto não encontrado"
+  "error": "Product not found"
 }
 ```
 
 ---
 
-## Observação
+## Notes
 
-- Todos os exemplos consideram integração com PostgreSQL e cenário de fast food.
-- Os campos podem ser ajustados conforme a modelagem da sua aplicação.
-- Para dúvidas sobre integração, autenticação e exemplos de código C#, consulte a documentação principal do projeto ou abra uma issue.
+- All examples consider integration with PostgreSQL and fast food scenario.
+- Fields can be adjusted according to your application's data model.
+- For questions about integration, authentication and C# code examples, consult the main project documentation or open an issue.

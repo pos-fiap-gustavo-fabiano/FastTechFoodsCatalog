@@ -9,6 +9,11 @@ This document presents REST endpoint examples for the Menu service of a Fast Foo
 ### 1. List all products
 **GET /api/menu**
 
+Optional query parameters:
+
+- `type` – filter by the product type (e.g., `Snack`, `Dessert`, `Drink`)
+- `search` – free text search applied to the product name and description
+
 **Response:**
 ```json
 [
@@ -36,7 +41,7 @@ This document presents REST endpoint examples for the Menu service of a Fast Foo
 ---
 
 ### 2. Product details
-**GET /api/menu/{id}**
+**GET /api/products/{id}**
 
 **Response (200 OK):**
 ```json
@@ -60,7 +65,7 @@ This document presents REST endpoint examples for the Menu service of a Fast Foo
 ---
 
 ### 3. Create product
-**POST /api/menu**
+**POST /api/products**
 
 **Request Body:**
 ```json
@@ -89,7 +94,7 @@ This document presents REST endpoint examples for the Menu service of a Fast Foo
 ---
 
 ### 4. Update product
-**PUT /api/menu/{id}**
+**PUT /api/products/{id}**
 
 **Request Body:**
 ```json
@@ -117,8 +122,33 @@ This document presents REST endpoint examples for the Menu service of a Fast Foo
 
 ---
 
-### 5. Delete product
-**DELETE /api/menu/{id}**
+### 5. Update availability
+**PATCH /api/products/{id}/availability**
+
+**Request Body:**
+```json
+{
+  "availability": false
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 2,
+  "name": "Large Fries",
+  "description": "Large portion of crispy french fries.",
+  "price": 12.00,
+  "availability": false,
+  "type": "Side",
+  "created_date": "2025-07-05T12:02:00Z"
+}
+```
+
+---
+
+### 6. Delete product
+**DELETE /api/products/{id}**
 
 **Response (204 No Content):**
 _No content._

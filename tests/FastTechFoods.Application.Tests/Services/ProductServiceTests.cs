@@ -31,7 +31,7 @@ public class ProductServiceTests
             new("Burger","Tasty",10m,true,ProductType.Snack),
             new("Fries","Crispy",5m,true,ProductType.Dessert)
         };
-        _repoMock.Setup(r => r.GetAllAsync(It.IsAny<CancellationToken>()))
+        _repoMock.Setup(r => r.SearchAsync(null, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(products);
 
         // Act
@@ -41,6 +41,26 @@ public class ProductServiceTests
         Assert.Equal(products.Count, result.Count());
         Assert.Contains(result, p => p.Name == "Burger" && p.Description == "Tasty");
         Assert.Contains(result, p => p.Name == "Fries" && p.Description == "Crispy");
+    }
+
+    [Fact]
+    public async Task GetAllAsync_WithFilters_AppliesFiltering()
+    {
+        // Arrange
+        var products = new List<Product>
+        {
+            new("Burger","Tasty",10m,true,ProductType.Snack),
+            new("Fries","Crispy",5m,true,ProductType.Dessert)
+        };
+        _repoMock.Setup(r => r.SearchAsync(ProductType.Snack, "bur", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(products.Where(p => p.Type == ProductType.Snack && p.Name.Contains("Burger")));
+
+        // Act
+        var result = await _service.GetAllAsync(ProductType.Snack, "bur");
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Burger", result.First().Name);
     }
 
     [Fact]
@@ -128,5 +148,24 @@ public class ProductServiceTests
         // Assert
         Assert.True(result);
         _repoMock.Verify(r => r.DeleteAsync(product, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAvailabilityAsync_WhenProductExists_UpdatesAvailability()
+    {
+        // Arrange
+        var product = new Product("Burger","Tasty",10m,true,ProductType.Snack);
+        _repoMock.Setup(r => r.GetByIdAsync(product.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(product);
+        _repoMock.Setup(r => r.UpdateAsync(product, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _service.UpdateAvailabilityAsync(product.Id, false);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.False(product.Availability);
+        _repoMock.Verify(r => r.UpdateAsync(product, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

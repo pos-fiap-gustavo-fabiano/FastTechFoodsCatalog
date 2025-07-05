@@ -14,9 +14,9 @@ public class ProductService : IProductService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<ProductDto>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ProductDto>> GetAllAsync(ProductType? type = null, string? search = null, CancellationToken cancellationToken = default)
     {
-        var products = await _repository.GetAllAsync(cancellationToken);
+        var products = await _repository.SearchAsync(type, search, cancellationToken);
         return products.Select(ToDto);
     }
 
@@ -40,6 +40,17 @@ public class ProductService : IProductService
             return null;
 
         product.Update(request.Name, request.Description, request.Price, request.Availability, request.Type);
+        await _repository.UpdateAsync(product, cancellationToken);
+        return ToDto(product);
+    }
+
+    public async Task<ProductDto?> UpdateAvailabilityAsync(Guid id, bool availability, CancellationToken cancellationToken = default)
+    {
+        var product = await _repository.GetByIdAsync(id, cancellationToken);
+        if (product is null)
+            return null;
+
+        product.SetAvailability(availability);
         await _repository.UpdateAsync(product, cancellationToken);
         return ToDto(product);
     }

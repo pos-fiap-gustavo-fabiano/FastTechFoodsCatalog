@@ -1,5 +1,6 @@
 using FastTechFoods.Application.DTOs;
 using FastTechFoods.Application.Interfaces;
+using FastTechFoods.Domain.Entities;
 using FastTechFoods.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
@@ -26,26 +27,26 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/api/menu", async (IProductService service, CancellationToken ct) =>
-    Results.Ok(await service.GetAllAsync(ct)));
+app.MapGet("/api/menu", async (ProductType? type, string? search, IProductService service, CancellationToken ct) =>
+    Results.Ok(await service.GetAllAsync(type, search, ct)));
 
-app.MapGet("/api/menu/{id}", async (Guid id, IProductService service, CancellationToken ct) =>
+app.MapGet("/api/products/{id}", async (Guid id, IProductService service, CancellationToken ct) =>
 {
     var product = await service.GetByIdAsync(id, ct);
     return product is not null ? Results.Ok(product) : Results.NotFound();
 });
 
-app.MapPost("/api/menu", async (CreateProductRequest request, IProductService service, IValidator<CreateProductRequest> validator, CancellationToken ct) =>
+app.MapPost("/api/products", async (CreateProductRequest request, IProductService service, IValidator<CreateProductRequest> validator, CancellationToken ct) =>
 {
     var validation = await validator.ValidateAsync(request, ct);
     if (!validation.IsValid)
         return Results.BadRequest(validation.Errors);
 
     var result = await service.CreateAsync(request, ct);
-    return Results.Created($"/api/menu/{result.Id}", result);
+    return Results.Created($"/api/products/{result.Id}", result);
 });
 
-app.MapPut("/api/menu/{id}", async (Guid id, UpdateProductRequest request, IProductService service, IValidator<UpdateProductRequest> validator, CancellationToken ct) =>
+app.MapPut("/api/products/{id}", async (Guid id, UpdateProductRequest request, IProductService service, IValidator<UpdateProductRequest> validator, CancellationToken ct) =>
 {
     var validation = await validator.ValidateAsync(request, ct);
     if (!validation.IsValid)
@@ -55,7 +56,13 @@ app.MapPut("/api/menu/{id}", async (Guid id, UpdateProductRequest request, IProd
     return updated is not null ? Results.Ok(updated) : Results.NotFound();
 });
 
-app.MapDelete("/api/menu/{id}", async (Guid id, IProductService service, CancellationToken ct) =>
+app.MapPatch("/api/products/{id}/availability", async (Guid id, UpdateProductAvailabilityRequest request, IProductService service, CancellationToken ct) =>
+{
+    var updated = await service.UpdateAvailabilityAsync(id, request.Availability, ct);
+    return updated is not null ? Results.Ok(updated) : Results.NotFound();
+});
+
+app.MapDelete("/api/products/{id}", async (Guid id, IProductService service, CancellationToken ct) =>
 {
     var deleted = await service.DeleteAsync(id, ct);
     return deleted ? Results.NoContent() : Results.NotFound();

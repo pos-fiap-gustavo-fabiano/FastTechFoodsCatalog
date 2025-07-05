@@ -10,16 +10,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidationAutoValidation();
 
-string connectionString = builder.Configuration.GetConnectionString("Default") ?? "Host=localhost;Database=fasttechfoods;Username=postgres;Password=postgres";
+string connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new ArgumentNullException("DbConnectionString");
+
 builder.Services.AddInfrastructure(connectionString);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapGet("/api/menu", async (IProductService service, CancellationToken ct) =>
     Results.Ok(await service.GetAllAsync(ct)));

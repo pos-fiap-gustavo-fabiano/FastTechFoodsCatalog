@@ -1,3 +1,5 @@
+using FastTechFoods.Domain.Entities;
+
 namespace FastTechFoods.Application.DTOs;
 
 public class CreateProductRequest
@@ -6,5 +8,5 @@ public class CreateProductRequest
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool Availability { get; set; }
-    public string Type { get; set; } = string.Empty;
+    public ProductType Type { get; set; }
 }

@@ -22,7 +22,10 @@ public class AppDbContext : DbContext
             entity.Property(p => p.Description).IsRequired().HasMaxLength(500);
             entity.Property(p => p.Price).HasColumnType("decimal(10,2)");
             entity.Property(p => p.Availability).IsRequired();
-            entity.Property(p => p.Type).IsRequired().HasMaxLength(100);
+            entity.Property(p => p.Type)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasMaxLength(100);
             entity.Property(p => p.CreatedDate).IsRequired();
         });
     }

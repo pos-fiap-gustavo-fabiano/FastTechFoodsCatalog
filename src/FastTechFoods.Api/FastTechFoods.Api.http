@@ -12,7 +12,7 @@ Accept: application/json
 ###
 
 # Menu listing with filters
-GET {{FastTechFoods.Api_HostAddress}}/api/menu?type=Snack&search=burger
+GET {{FastTechFoods.Api_HostAddress}}/api/menu?type=Dessert
 Accept: application/json
 
 ###
@@ -54,7 +54,7 @@ Accept: application/json
 ###
 
 # Update product availability
-PATCH {{FastTechFoods.Api_HostAddress}}/api/products/{{productId}}/availability
+PATCH {{FastTechFoods.Api_HostAddress}}/api/products/8a252473-1b12-49e2-8542-d99710e5f125/availability
 Content-Type: application/json
 Accept: application/json
 

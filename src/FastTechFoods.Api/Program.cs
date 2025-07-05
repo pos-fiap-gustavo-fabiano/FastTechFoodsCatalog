@@ -5,6 +5,7 @@ using FastTechFoods.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using FastTechFoods.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,12 @@ builder.Services.AddFluentValidationAutoValidation();
 string connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new ArgumentNullException("DbConnectionString");
 
 builder.Services.AddInfrastructure(connectionString);
+
+builder.Services.AddFastTechFoodsObservability(
+    serviceName: "FastTechFoodsCatalog.Api",
+    serviceVersion: "1.0.0",
+    otlpEndpoint: "http://4.198.128.197:4317"
+);
 
 var app = builder.Build();
 

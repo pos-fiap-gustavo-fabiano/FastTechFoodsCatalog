@@ -28,6 +28,24 @@ public class ProductRepository : IProductRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<Product>> SearchAsync(ProductType? type = null, string? search = null, CancellationToken cancellationToken = default)
+    {
+        IQueryable<Product> query = _context.Products
+            .AsNoTracking()
+            .Where(p => p.Availability);
+
+        if (type.HasValue)
+            query = query.Where(p => p.Type == type.Value);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var pattern = $"%{search}%";
+            query = query.Where(p => EF.Functions.ILike(p.Name, pattern) || EF.Functions.ILike(p.Description, pattern));
+        }
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(Product product, CancellationToken cancellationToken = default)
     {
         await _context.Products.AddAsync(product, cancellationToken);

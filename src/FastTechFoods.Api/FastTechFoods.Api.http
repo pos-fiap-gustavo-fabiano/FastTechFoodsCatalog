@@ -29,11 +29,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Burger",
-  "description": "Tasty burger",
-  "price": 10.0,
+  "name": "Big Mac",
+  "description": "Pão com hamburguer do Mac Donalds",
+  "price": 29.0,
   "availability": true,
-  "type": "Snack"
+  "type": 0
 }
 
 ###

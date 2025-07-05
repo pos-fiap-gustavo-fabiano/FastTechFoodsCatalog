@@ -4,3 +4,68 @@ GET {{FastTechFoods.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# Menu listing
+GET {{FastTechFoods.Api_HostAddress}}/api/menu
+Accept: application/json
+
+###
+
+# Menu listing with filters
+GET {{FastTechFoods.Api_HostAddress}}/api/menu?type=Snack&search=burger
+Accept: application/json
+
+###
+
+# Get product by id
+GET {{FastTechFoods.Api_HostAddress}}/api/products/{{productId}}
+Accept: application/json
+
+###
+
+# Create new product
+POST {{FastTechFoods.Api_HostAddress}}/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Burger",
+  "description": "Tasty burger",
+  "price": 10.0,
+  "availability": true,
+  "type": "Snack"
+}
+
+###
+
+# Update existing product
+PUT {{FastTechFoods.Api_HostAddress}}/api/products/{{productId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Burger XL",
+  "description": "Bigger tasty burger",
+  "price": 12.5,
+  "availability": true,
+  "type": "Snack"
+}
+
+###
+
+# Update product availability
+PATCH {{FastTechFoods.Api_HostAddress}}/api/products/{{productId}}/availability
+Content-Type: application/json
+Accept: application/json
+
+{
+  "availability": false
+}
+
+###
+
+# Delete product
+DELETE {{FastTechFoods.Api_HostAddress}}/api/products/{{productId}}
+Accept: application/json
+
+###

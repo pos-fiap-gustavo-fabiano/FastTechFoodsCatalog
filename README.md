@@ -1,139 +1,139 @@
 # Menu Service – Fast Food Delivery (PostgreSQL Example)
 
-Este documento apresenta exemplos de endpoints REST para o serviço de Menu de uma aplicação Fast Food Delivery, utilizando PostgreSQL como banco de dados.
+This document presents REST endpoint examples for the Menu service of a Fast Food Delivery application, using PostgreSQL as the database.
 
 ---
 
 ## Endpoints
 
-### 1. Listar todos produtos
+### 1. List all products
 **GET /api/menu**
 
-**Resposta:**
+**Response:**
 ```json
 [
   {
     "id": 1,
-    "nome": "Cheeseburger",
-    "descricao": "Hambúrguer com queijo, alface, tomate e molho especial.",
-    "preco": 18.50,
-    "disponibilidade": true,
-    "tipo": "Lanche",
-    "data_criacao": "2025-07-05T12:00:00Z"
+    "name": "Cheeseburger",
+    "description": "Burger with cheese, lettuce, tomato and special sauce.",
+    "price": 18.50,
+    "availability": true,
+    "type": "Main",
+    "created_date": "2025-07-05T12:00:00Z"
   },
   {
     "id": 2,
-    "nome": "Batata Frita Média",
-    "descricao": "Porção média de batata frita crocante.",
-    "preco": 8.00,
-    "disponibilidade": true,
-    "tipo": "Acompanhamento",
-    "data_criacao": "2025-07-05T12:02:00Z"
+    "name": "Medium Fries",
+    "description": "Medium portion of crispy french fries.",
+    "price": 8.00,
+    "availability": true,
+    "type": "Side",
+    "created_date": "2025-07-05T12:02:00Z"
   }
 ]
 ```
 
 ---
 
-### 2. Detalhes de um produto
+### 2. Product details
 **GET /api/menu/{id}**
 
-**Resposta (200 OK):**
+**Response (200 OK):**
 ```json
 {
   "id": 1,
-  "nome": "Cheeseburger",
-  "descricao": "Hambúrguer com queijo, alface, tomate e molho especial.",
-  "preco": 18.50,
-  "disponibilidade": true,
-  "tipo": "Lanche",
-  "data_criacao": "2025-07-05T12:00:00Z"
+  "name": "Cheeseburger",
+  "description": "Burger with cheese, lettuce, tomato and special sauce.",
+  "price": 18.50,
+  "availability": true,
+  "type": "Main",
+  "created_date": "2025-07-05T12:00:00Z"
 }
 ```
-**Resposta se não encontrado:**
+**Response if not found:**
 ```json
 {
-  "error": "Produto não encontrado"
+  "error": "Product not found"
 }
 ```
 
 ---
 
-### 3. Cadastrar produto
+### 3. Create product
 **POST /api/menu**
 
 **Request Body:**
 ```json
 {
-  "nome": "Refrigerante 350ml",
-  "descricao": "Coca-cola, lata 350ml.",
-  "preco": 6.00,
-  "disponibilidade": true,
-  "tipo": "Bebida"
+  "name": "Soft Drink 350ml",
+  "description": "Coca-cola, 350ml can.",
+  "price": 6.00,
+  "availability": true,
+  "type": "Beverage"
 }
 ```
 
-**Resposta (201 Created):**
+**Response (201 Created):**
 ```json
 {
   "id": 3,
-  "nome": "Refrigerante 350ml",
-  "descricao": "Coca-cola, lata 350ml.",
-  "preco": 6.00,
-  "disponibilidade": true,
-  "tipo": "Bebida",
-  "data_criacao": "2025-07-05T14:00:00Z"
+  "name": "Soft Drink 350ml",
+  "description": "Coca-cola, 350ml can.",
+  "price": 6.00,
+  "availability": true,
+  "type": "Beverage",
+  "created_date": "2025-07-05T14:00:00Z"
 }
 ```
 
 ---
 
-### 4. Atualizar produto
+### 4. Update product
 **PUT /api/menu/{id}**
 
 **Request Body:**
 ```json
 {
-  "nome": "Batata Frita Grande",
-  "descricao": "Porção grande de batata frita crocante.",
-  "preco": 12.00,
-  "disponibilidade": true,
-  "tipo": "Acompanhamento"
+  "name": "Large Fries",
+  "description": "Large portion of crispy french fries.",
+  "price": 12.00,
+  "availability": true,
+  "type": "Side"
 }
 ```
 
-**Resposta (200 OK):**
+**Response (200 OK):**
 ```json
 {
   "id": 2,
-  "nome": "Batata Frita Grande",
-  "descricao": "Porção grande de batata frita crocante.",
-  "preco": 12.00,
-  "disponibilidade": true,
-  "tipo": "Acompanhamento",
-  "data_criacao": "2025-07-05T12:02:00Z"
+  "name": "Large Fries",
+  "description": "Large portion of crispy french fries.",
+  "price": 12.00,
+  "availability": true,
+  "type": "Side",
+  "created_date": "2025-07-05T12:02:00Z"
 }
 ```
 
 ---
 
-### 5. Remover produto
+### 5. Delete product
 **DELETE /api/menu/{id}**
 
-**Resposta (204 No Content):**
-_Sem conteúdo._
+**Response (204 No Content):**
+_No content._
 
-**Resposta se não encontrado:**
+**Response if not found:**
 ```json
 {
-  "error": "Produto não encontrado"
+  "error": "Product not found"
 }
 ```
 
 ---
 
-## Observação
+## Note
 
-- Todos os exemplos consideram integração com PostgreSQL e cenário de fast food.
-- Os campos podem ser ajustados conforme a modelagem da sua aplicação.
-- Para dúvidas sobre integração, autenticação e exemplos de código C#, consulte a documentação principal do projeto ou abra uma issue.
+- All examples consider integration with PostgreSQL and fast food scenario.
+- Fields can be adjusted according to your application's modeling.
+- For questions about integration, authentication and C# code examples, please refer to the main project documentation or open an issue.

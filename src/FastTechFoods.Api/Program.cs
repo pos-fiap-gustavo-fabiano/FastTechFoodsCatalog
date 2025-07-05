@@ -1,6 +1,7 @@
 using FastTechFoods.Application.DTOs;
 using FastTechFoods.Application.Interfaces;
 using FastTechFoods.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
@@ -15,6 +16,12 @@ string connectionString = builder.Configuration.GetConnectionString("Default") ?
 builder.Services.AddInfrastructure(connectionString);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FastTechFoods.Infrastructure.Data.AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -14,21 +14,21 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 [
   {
     "id": 1,
-    "nome": "Cheeseburger",
-    "descricao": "Hambúrguer com queijo, alface, tomate e molho especial.",
-    "preco": 18.50,
-    "disponibilidade": true,
-    "tipo": "Lanche",
-    "data_criacao": "2025-07-05T12:00:00Z"
+    "name": "Cheeseburger",
+    "description": "Burger with cheese, lettuce, tomato and special sauce.",
+    "price": 18.50,
+    "available": true,
+    "type": "Snack",
+    "created_at": "2025-07-05T12:00:00Z"
   },
   {
     "id": 2,
-    "nome": "Batata Frita Média",
-    "descricao": "Porção média de batata frita crocante.",
-    "preco": 8.00,
-    "disponibilidade": true,
-    "tipo": "Acompanhamento",
-    "data_criacao": "2025-07-05T12:02:00Z"
+    "name": "Medium French Fries",
+    "description": "Medium portion of crispy french fries.",
+    "price": 8.00,
+    "available": true,
+    "type": "Side",
+    "created_at": "2025-07-05T12:02:00Z"
   }
 ]
 ```
@@ -42,18 +42,18 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 ```json
 {
   "id": 1,
-  "nome": "Cheeseburger",
-  "descricao": "Hambúrguer com queijo, alface, tomate e molho especial.",
-  "preco": 18.50,
-  "disponibilidade": true,
-  "tipo": "Lanche",
-  "data_criacao": "2025-07-05T12:00:00Z"
+  "name": "Cheeseburger",
+  "description": "Burger with cheese, lettuce, tomato and special sauce.",
+  "price": 18.50,
+  "available": true,
+  "type": "Snack",
+  "created_at": "2025-07-05T12:00:00Z"
 }
 ```
 **Resposta se não encontrado:**
 ```json
 {
-  "error": "Produto não encontrado"
+  "error": "Product not found"
 }
 ```
 
@@ -65,11 +65,11 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 **Request Body:**
 ```json
 {
-  "nome": "Refrigerante 350ml",
-  "descricao": "Coca-cola, lata 350ml.",
-  "preco": 6.00,
-  "disponibilidade": true,
-  "tipo": "Bebida"
+  "name": "Soda 350ml",
+  "description": "Coca-cola, 350ml can.",
+  "price": 6.00,
+  "available": true,
+  "type": "Drink"
 }
 ```
 
@@ -77,12 +77,12 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 ```json
 {
   "id": 3,
-  "nome": "Refrigerante 350ml",
-  "descricao": "Coca-cola, lata 350ml.",
-  "preco": 6.00,
-  "disponibilidade": true,
-  "tipo": "Bebida",
-  "data_criacao": "2025-07-05T14:00:00Z"
+  "name": "Soda 350ml",
+  "description": "Coca-cola, 350ml can.",
+  "price": 6.00,
+  "available": true,
+  "type": "Drink",
+  "created_at": "2025-07-05T14:00:00Z"
 }
 ```
 
@@ -94,11 +94,11 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 **Request Body:**
 ```json
 {
-  "nome": "Batata Frita Grande",
-  "descricao": "Porção grande de batata frita crocante.",
-  "preco": 12.00,
-  "disponibilidade": true,
-  "tipo": "Acompanhamento"
+  "name": "Large French Fries",
+  "description": "Large portion of crispy french fries.",
+  "price": 12.00,
+  "available": true,
+  "type": "Side"
 }
 ```
 
@@ -106,12 +106,12 @@ Este documento apresenta exemplos de endpoints REST para o serviço de Menu de u
 ```json
 {
   "id": 2,
-  "nome": "Batata Frita Grande",
-  "descricao": "Porção grande de batata frita crocante.",
-  "preco": 12.00,
-  "disponibilidade": true,
-  "tipo": "Acompanhamento",
-  "data_criacao": "2025-07-05T12:02:00Z"
+  "name": "Large French Fries",
+  "description": "Large portion of crispy french fries.",
+  "price": 12.00,
+  "available": true,
+  "type": "Side",
+  "created_at": "2025-07-05T12:02:00Z"
 }
 ```
 
@@ -126,7 +126,7 @@ _Sem conteúdo._
 **Resposta se não encontrado:**
 ```json
 {
-  "error": "Produto não encontrado"
+  "error": "Product not found"
 }
 ```
 

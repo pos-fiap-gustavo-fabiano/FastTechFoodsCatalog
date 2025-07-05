@@ -1,3 +1,5 @@
+using FastTechFoods.Domain.Entities;
+
 namespace FastTechFoods.Application.DTOs;
 
 public record ProductDto(
@@ -6,5 +8,5 @@ public record ProductDto(
     string Description,
     decimal Price,
     bool Availability,
-    string Type,
+    ProductType Type,
     DateTime CreatedDate);

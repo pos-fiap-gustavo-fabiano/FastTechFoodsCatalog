@@ -35,13 +35,17 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapGet("/api/menu", async (ProductType? type, string? search, IProductService service, CancellationToken ct) =>
-    Results.Ok(await service.GetAllAsync(type, search, ct)));
+    Results.Ok(await service.GetAllAsync(type, search, ct)))
+    .Produces<List<ProductDto>>(StatusCodes.Status200OK)
+    .WithOpenApi(); ;
 
 app.MapGet("/api/products/{id}", async (Guid id, IProductService service, CancellationToken ct) =>
 {
     var product = await service.GetByIdAsync(id, ct);
     return product is not null ? Results.Ok(product) : Results.NotFound();
-});
+})
+.Produces<ProductDto>(StatusCodes.Status200OK)
+.WithOpenApi(); ;
 
 app.MapPost("/api/products", async (CreateProductRequest request, IProductService service, IValidator<CreateProductRequest> validator, CancellationToken ct) =>
 {

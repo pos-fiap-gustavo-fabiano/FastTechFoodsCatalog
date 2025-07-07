@@ -8,16 +8,18 @@ namespace FastTechFoods.Application.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
+    private IBlobStorageService _blobStorageService;
 
 
-    public ProductService(IProductRepository repository)
+    public ProductService(IProductRepository repository, ICategoryRepository @object, IBlobStorageService blobStorageService)
     {
         _repository = repository;
+        _blobStorageService = blobStorageService;
     }
 
-    public async Task<IEnumerable<ProductDto>> GetAllAsync(ProductType? type = null, string? search = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ProductDto>> GetAllAsync(Guid? categoryId, string? search = null, CancellationToken cancellationToken = default)
     {
-        var products = await _repository.SearchAsync(type, search, cancellationToken);
+        var products = await _repository.SearchAsync(categoryId, search, cancellationToken);
         return products.Select(ToDto);
     }
 
@@ -29,7 +31,14 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken = default)
     {
-        var product = new Product(request.Name, request.Description, request.Price, request.Availability, request.Type);
+        string? imageUrl = null;
+
+        if (request.Image != null)
+        {
+            imageUrl = await _blobStorageService.UploadImageAsync(request.Image, "fasttechfoods", cancellationToken);
+
+        }
+        var product = new Product(request.Name, request.Description, request.Price,request.Availability, imageUrl, request.CategoryId);
         await _repository.AddAsync(product, cancellationToken);
         return ToDto(product);
     }
@@ -40,7 +49,7 @@ public class ProductService : IProductService
         if (product is null)
             return null;
 
-        product.Update(request.Name, request.Description, request.Price, request.Availability, request.Type);
+        product.Update(request.Name, request.Description, request.Price, request.Availability, request.CategoryId);
         await _repository.UpdateAsync(product, cancellationToken);
         return ToDto(product);
     }
@@ -72,6 +81,7 @@ public class ProductService : IProductService
         product.Description,
         product.Price,
         product.Availability,
-        product.Type,
+        product.ImageUrl,
+        product.CategoryId,
         product.CreatedDate);
 }

@@ -8,5 +8,5 @@ public class UpdateProductRequest
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool Availability { get; set; }
-    public ProductType Type { get; set; }
+    public Guid CategoryId { get; set; }
 }

@@ -10,6 +10,5 @@ public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequ
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.Description).NotEmpty().MaximumLength(500);
         RuleFor(x => x.Price).GreaterThan(0);
-        RuleFor(x => x.Type).IsInEnum();
     }
 }

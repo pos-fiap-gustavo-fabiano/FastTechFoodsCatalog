@@ -8,5 +8,7 @@ public record ProductDto(
     string Description,
     decimal Price,
     bool Availability,
-    ProductType Type,
-    DateTime CreatedDate);
+    string? ImageUrl,
+    Guid CategoryId,
+    DateTime CreatedDate
+);

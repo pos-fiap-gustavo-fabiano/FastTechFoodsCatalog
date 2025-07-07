@@ -28,14 +28,14 @@ public class ProductRepository : IProductRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Product>> SearchAsync(ProductType? type = null, string? search = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Product>> SearchAsync(Guid? CategoryId, string? search = null, CancellationToken cancellationToken = default)
     {
         IQueryable<Product> query = _context.Products
             .AsNoTracking()
             .Where(p => p.Availability);
 
-        if (type.HasValue)
-            query = query.Where(p => p.Type == type.Value);
+        if (CategoryId !=  Guid.Empty && CategoryId != null)
+            query = query.Where(p => p.CategoryId == CategoryId);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -46,21 +46,25 @@ public class ProductRepository : IProductRepository
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task AddAsync(Product product, CancellationToken cancellationToken = default)
+    public async Task<Product> AddAsync(Product product, CancellationToken cancellationToken = default)
     {
         await _context.Products.AddAsync(product, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+        return product;
     }
 
-    public async Task UpdateAsync(Product product, CancellationToken cancellationToken = default)
+    public async Task<Product> UpdateAsync(Product product, CancellationToken cancellationToken = default)
     {
         _context.Products.Update(product);
         await _context.SaveChangesAsync(cancellationToken);
+        return product;
     }
 
-    public async Task DeleteAsync(Product product, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Product product, CancellationToken cancellationToken = default)
     {
         _context.Products.Remove(product);
         await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
+
 }

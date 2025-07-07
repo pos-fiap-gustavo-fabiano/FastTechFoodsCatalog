@@ -7,6 +7,8 @@ using FastTechFoods.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
+using Azure.Storage.Blobs;
+using FastTechFoods.Infrastructure.Services;
 
 namespace FastTechFoods.Infrastructure;
 
@@ -16,9 +18,15 @@ public static class ServiceCollectionExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
-        services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateProductRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateCategoryRequestValidator>();
+        services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_CONNECTION"))); // Use your blob storage connection string
+    services.AddScoped<IBlobStorageService, BlobStorageService>();
         return services;
     }
 }

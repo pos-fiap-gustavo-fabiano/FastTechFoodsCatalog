@@ -112,7 +112,7 @@ jobs:
 
       - name: Apply secrets and configmaps
         run: |
-          kubectl apply -f k8s/01-config-map.yaml.yaml
+          kubectl apply -f k8s/01-config-map.yaml
 
       - name: Deploys application
         uses: Azure/k8s-deploy@v4

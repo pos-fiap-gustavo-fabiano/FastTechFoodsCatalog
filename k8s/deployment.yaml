@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fasttechfoods-catalog-api
+  namespace: fasttechfoods
+  labels:
+    app: fasttechfoods-catalog-api
+    component: api
+    version: v1
+    workflowFriendlyName: Build_and_deploy_an_app_to_AKS
+    workflow: actions.github.com-k8s-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fasttechfoods-catalog-api
+  template:
+    metadata:
+      labels:
+        app: fasttechfoods-catalog-api
+    spec:
+      containers:
+      - name: fasttechfoods-catalog-api
+        image: fabianotxss/fasttechfoods-catalog-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fasttechfoods-catalog-api-secrets
+              key: JWT_SECRET
+        - name: CONNECTION_STRING_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: fasttechfoods-catalog-api-secrets
+              key: CONNECTION_STRING_DATABASE
+        - name: BLOB_STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: fasttechfoods-catalog-api-secrets
+              key: BLOB_STORAGE_CONNECTION_STRING
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+        - name: tmp-volume
+          mountPath: /tmp
+        securityContext:
+          capabilities:
+            add: ["SYS_RESOURCE"]
+      volumes:
+      - name: config-volume
+        configMap:
+          name: fasttechfoods-catalog-api-config
+      - name: tmp-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fasttechfoods-catalog-api-service
+  namespace: fasttechfoods
+  labels:
+    app: fasttechfoods-catalog-api
+    component: service
+    workflowFriendlyName: Build_and_deploy_an_app_to_AKS
+    workflow: actions.github.com-k8s-deploy
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+spec:
+  type: LoadBalancer
+  selector:
+    app: fasttechfoods-catalog-api
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 8081
+    protocol: TCP
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fasttechfoods-catalog-api-service-internal
+  namespace: fasttechfoods
+  labels:
+    app: fasttechfoods-catalog-api
+    component: service-internal
+    workflowFriendlyName: Build_and_deploy_an_app_to_AKS
+    workflow: actions.github.com-k8s-deploy
+spec:
+  type: ClusterIP
+  selector:
+    app: fasttechfoods-catalog-api
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 8081
+    protocol: TCP

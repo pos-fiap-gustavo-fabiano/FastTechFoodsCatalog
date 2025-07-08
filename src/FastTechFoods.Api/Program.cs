@@ -20,8 +20,10 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
-var connectionString = builder.Configuration.GetConnectionString("Default")!;
-builder.Services.AddInfrastructure(connectionString);
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING_DATABASE") ??
+                       builder.Configuration.GetConnectionString("Default");
+builder.Services.AddInfrastructure(connectionString, builder.Configuration);
+
 
 var app = builder.Build();
 
@@ -41,6 +43,7 @@ catch (Exception ex)
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("AllowAll");
+app.UseFastTechFoodsInfrastructure();
 
 app.MapCategoryEndpoints();
 app.MapProductEndpoints();

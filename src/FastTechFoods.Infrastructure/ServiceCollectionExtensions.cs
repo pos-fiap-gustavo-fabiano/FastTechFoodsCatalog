@@ -9,15 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using Azure.Storage.Blobs;
 using FastTechFoods.Infrastructure.Services;
+using FastTechFoods.Observability;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
 
 namespace FastTechFoods.Infrastructure;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
+        services.AddFastTechFoodsObservabilityAndHealthChecks<AppDbContext>(configuration);
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductRepository, ProductRepository>();
@@ -25,8 +29,15 @@ public static class ServiceCollectionExtensions
         services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateProductRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<CreateCategoryRequestValidator>();
-        services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_CONNECTION"))); // Use your blob storage connection string
+        services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_STORAGE_CONNECTION_STRING")));
     services.AddScoped<IBlobStorageService, BlobStorageService>();
         return services;
     }
+
+    public static WebApplication UseFastTechFoodsInfrastructure(this WebApplication app)
+    {
+        app.UseFastTechFoodsHealthChecksUI();
+        return app;
+    }
 }
+

@@ -416,3 +416,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+src/FastTechFoods.Api/Properties/launchSettings.json
+/src/FastTechFoods.Api/Properties/launchSettings.json

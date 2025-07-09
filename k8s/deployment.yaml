@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: fasttechfoods-catalog-api
-        image: fabianotxss/fasttechfoods-catalog-api:latest
+        image: hackathonpostech.azurecr.io/fasttechfoods-catalog-api:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

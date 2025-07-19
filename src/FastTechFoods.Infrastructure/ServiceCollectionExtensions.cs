@@ -21,7 +21,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
-        services.AddFastTechFoodsObservabilityAndHealthChecks<AppDbContext>(configuration);
+        services.AddFastTechFoodsObservabilityWithSerilog(configuration);
+        services.AddFastTechFoodsHealthChecks<AppDbContext>(configuration);
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductRepository, ProductRepository>();
@@ -37,6 +38,7 @@ public static class ServiceCollectionExtensions
     public static WebApplication UseFastTechFoodsInfrastructure(this WebApplication app)
     {
         app.UseFastTechFoodsHealthChecksUI();
+        app.UseFastTechFoodsPrometheus();
         return app;
     }
 }

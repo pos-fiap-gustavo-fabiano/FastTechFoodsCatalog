@@ -8,12 +8,14 @@ namespace FastTechFoods.Application.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
+    private readonly ICategoryRepository _categoryRepository;
     private IBlobStorageService _blobStorageService;
 
 
-    public ProductService(IProductRepository repository, ICategoryRepository @object, IBlobStorageService blobStorageService)
+    public ProductService(IProductRepository repository, ICategoryRepository categoryRepository, IBlobStorageService blobStorageService)
     {
         _repository = repository;
+        _categoryRepository = categoryRepository;
         _blobStorageService = blobStorageService;
     }
 
@@ -31,14 +33,21 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken = default)
     {
+        // Validar se a categoria existe
+        var categoryExists = await _categoryRepository.ExistsAsync(request.CategoryId, cancellationToken);
+        if (!categoryExists)
+        {
+            throw new ArgumentException($"Category with ID {request.CategoryId} does not exist.", nameof(request.CategoryId));
+        }
+
         string? imageUrl = null;
 
         if (request.Image != null)
         {
             imageUrl = await _blobStorageService.UploadImageAsync(request.Image, "fasttechfoods", cancellationToken);
-
         }
-        var product = new Product(request.Name, request.Description, request.Price,request.Availability, imageUrl, request.CategoryId);
+        
+        var product = new Product(request.Name, request.Description, request.Price, request.Availability, imageUrl ?? "", request.CategoryId);
         await _repository.AddAsync(product, cancellationToken);
         return ToDto(product);
     }

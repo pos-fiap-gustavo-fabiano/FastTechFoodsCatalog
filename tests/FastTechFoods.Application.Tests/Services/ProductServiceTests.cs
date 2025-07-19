@@ -11,6 +11,8 @@ using FastTechFoods.Domain.Repositories;
 using Moq;
 using Xunit;
 
+#nullable enable
+
 namespace FastTechFoods.Application.Tests.Services;
 
 public class ProductServiceTests
@@ -40,13 +42,15 @@ public class ProductServiceTests
             new("Fries", "Crispy", 5m, true, "", _categoryId2)
         };
 
-        _repoMock.Setup(r => r.GetAllAsync(It.IsAny<CancellationToken>()))
+        // Corrigir o mock para SearchAsync
+        _repoMock.Setup(r => r.SearchAsync(null, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(products);
 
         // Act
-        var result = await _service.GetAllAsync(category1.Id,null, CancellationToken.None);
+        var result = await _service.GetAllAsync(null, null, CancellationToken.None);
 
         // Assert
+        Assert.Equal(2, result.Count());
         Assert.Contains(result, p => p.Name == "Burger" && p.Description == "Tasty");
         Assert.Contains(result, p => p.Name == "Fries" && p.Description == "Crispy");
     }
@@ -199,15 +203,20 @@ public class ProductServiceTests
     public async Task DeleteAsync_WhenProductExists_ReturnsTrue()
     {
         // Arrange
+        var productId = Guid.NewGuid();
         var product = new Product("Burger", "Tasty", 10m, true, "", Guid.NewGuid());
+        
+        _repoMock.Setup(r => r.GetByIdAsync(productId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(product);
         _repoMock.Setup(r => r.DeleteAsync(product, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.DeleteAsync(product.Id, CancellationToken.None);
+        var result = await _service.DeleteAsync(productId, CancellationToken.None);
 
         // Assert
         Assert.True(result);
+        _repoMock.Verify(r => r.GetByIdAsync(productId, It.IsAny<CancellationToken>()), Times.Once);
         _repoMock.Verify(r => r.DeleteAsync(product, It.IsAny<CancellationToken>()), Times.Once);
     }
 

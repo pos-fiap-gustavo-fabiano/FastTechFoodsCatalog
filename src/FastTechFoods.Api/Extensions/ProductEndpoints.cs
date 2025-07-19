@@ -1,6 +1,7 @@
 using FastTechFoods.Application.DTOs;
 using FastTechFoods.Application.Interfaces;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FastTechFoods.Api.Extensions;
 
@@ -9,52 +10,113 @@ public static class ProductEndpoints
     public static void MapProductEndpoints(this IEndpointRouteBuilder app)
     {
         // Menu endpoint
-        app.MapGet("/api/menu", async (Guid? categoryId, string? search, IProductService service, CancellationToken ct) =>
-            await service.GetAllAsync(categoryId, search, ct))
-            .WithTags("Menu");
+        app.MapGet("/api/menu", async (
+            Guid? categoryId, 
+            string? search, 
+            IProductService service, 
+            CancellationToken ct) =>
+            {
+                var products = await service.GetAllAsync(categoryId, search, ct);
+                return Results.Ok(products);
+            })
+            .WithName("GetMenu")
+            .WithTags("Menu")
+            .WithSummary("Buscar produtos do menu")
+            .WithDescription("Retorna lista de produtos com filtros opcionais por categoria e busca textual")
+            .Produces<IEnumerable<ProductDto>>(200);
 
-        var group = app.MapGroup("/api/products").WithTags("Products");
+        var group = app.MapGroup("/api/products")
+            .WithTags("Products")
+            .WithOpenApi();
 
         // GET /api/products/{id}
-        group.MapGet("/{id:guid}", async (Guid id, IProductService service, CancellationToken ct) =>
-            await service.GetByIdAsync(id, ct) is { } product ? Results.Ok(product) : Results.NotFound());
+        group.MapGet("/{id:guid}", async (
+            Guid id, 
+            IProductService service, 
+            CancellationToken ct) =>
+            {
+                var product = await service.GetByIdAsync(id, ct);
+                return product != null ? Results.Ok(product) : Results.NotFound();
+            })
+            .WithName("GetProductById")
+            .WithSummary("Buscar produto por ID")
+            .WithDescription("Retorna um produto específico pelo seu ID")
+            .Produces<ProductDto>(200)
+            .Produces(404);
 
         // POST /api/products (multipart form)
-        group.MapPost("/", async (HttpRequest request, IProductService service, IValidator<CreateProductRequest> validator, CancellationToken ct) =>
-        {
-            var form = await request.ReadFormAsync(ct);
-            var productRequest = new CreateProductRequest
+        group.MapPost("/", async (
+            [FromForm] CreateProductRequest productRequest,
+            IProductService service,
+            IValidator<CreateProductRequest> validator,
+            CancellationToken ct) =>
             {
-                Name = form["Name"]!,
-                Description = form["Description"]!,
-                Price = decimal.Parse(form["Price"]!),
-                Availability = bool.Parse(form["Availability"]!),
-                CategoryId = Guid.Parse(form["CategoryId"]!),
-                Image = form.Files.FirstOrDefault()
-            };
+                var validation = await validator.ValidateAsync(productRequest, ct);
+                if (!validation.IsValid) 
+                    return Results.BadRequest(validation.Errors);
 
-            var validation = await validator.ValidateAsync(productRequest, ct);
-            if (!validation.IsValid) return Results.BadRequest(validation.Errors);
-
-            var result = await service.CreateAsync(productRequest, ct);
-            return Results.Created($"/api/products/{result.Id}", result);
-        }).DisableAntiforgery();
+                var result = await service.CreateAsync(productRequest, ct);
+                return Results.Created($"/api/products/{result.Id}", result);
+            })
+            .WithName("CreateProduct")
+            .WithSummary("Criar novo produto")
+            .WithDescription("Cria um novo produto com upload de imagem (multipart/form-data)")
+            .Accepts<CreateProductRequest>("multipart/form-data")
+            .Produces<ProductDto>(201)
+            .Produces(400)
+            .DisableAntiforgery();
 
         // PUT /api/products/{id}
-        group.MapPut("/{id:guid}", async (Guid id, UpdateProductRequest request, IProductService service, IValidator<UpdateProductRequest> validator, CancellationToken ct) =>
-        {
-            var validation = await validator.ValidateAsync(request, ct);
-            if (!validation.IsValid) return Results.BadRequest(validation.Errors);
-            
-            return await service.UpdateAsync(id, request, ct) is { } updated ? Results.Ok(updated) : Results.NotFound();
-        });
+        group.MapPut("/{id:guid}", async (
+            Guid id, 
+            UpdateProductRequest request, 
+            IProductService service, 
+            IValidator<UpdateProductRequest> validator, 
+            CancellationToken ct) =>
+            {
+                var validation = await validator.ValidateAsync(request, ct);
+                if (!validation.IsValid) 
+                    return Results.BadRequest(validation.Errors);
+                
+                var updated = await service.UpdateAsync(id, request, ct);
+                return updated != null ? Results.Ok(updated) : Results.NotFound();
+            })
+            .WithName("UpdateProduct")
+            .WithSummary("Atualizar produto")
+            .WithDescription("Atualiza um produto existente")
+            .Produces<ProductDto>(200)
+            .Produces(400)
+            .Produces(404);
 
         // PATCH /api/products/{id}/availability
-        group.MapPatch("/{id:guid}/availability", async (Guid id, UpdateProductAvailabilityRequest request, IProductService service, CancellationToken ct) =>
-            await service.UpdateAvailabilityAsync(id, request.Availability, ct) is { } updated ? Results.Ok(updated) : Results.NotFound());
+        group.MapPatch("/{id:guid}/availability", async (
+            Guid id, 
+            UpdateProductAvailabilityRequest request, 
+            IProductService service, 
+            CancellationToken ct) =>
+            {
+                var updated = await service.UpdateAvailabilityAsync(id, request.Availability, ct);
+                return updated != null ? Results.Ok(updated) : Results.NotFound();
+            })
+            .WithName("UpdateProductAvailability")
+            .WithSummary("Atualizar disponibilidade do produto")
+            .WithDescription("Atualiza apenas a disponibilidade de um produto")
+            .Produces<ProductDto>(200)
+            .Produces(404);
 
         // DELETE /api/products/{id}
-        group.MapDelete("/{id:guid}", async (Guid id, IProductService service, CancellationToken ct) =>
-            await service.DeleteAsync(id, ct) ? Results.NoContent() : Results.NotFound());
+        group.MapDelete("/{id:guid}", async (
+            Guid id, 
+            IProductService service, 
+            CancellationToken ct) =>
+            {
+                var deleted = await service.DeleteAsync(id, ct);
+                return deleted ? Results.NoContent() : Results.NotFound();
+            })
+            .WithName("DeleteProduct")
+            .WithSummary("Deletar produto")
+            .WithDescription("Remove um produto do sistema")
+            .Produces(204)
+            .Produces(404);
     }
 }

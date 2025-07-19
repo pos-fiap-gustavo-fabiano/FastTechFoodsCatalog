@@ -1,10 +1,11 @@
-﻿using FastTechFoods.Api.Extensions;
-using FastTechFoods.Infrastructure;
+﻿using FastTechFoods.Infrastructure;
 using FastTechFoodsAuth.Security.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Adicionar Controllers
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -21,7 +22,8 @@ builder.Services.AddCors(options =>
 });
 
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING_DATABASE") ??
-                       builder.Configuration.GetConnectionString("Default");
+                       builder.Configuration.GetConnectionString("Default") ??
+                       throw new InvalidOperationException("Connection string not found");
 builder.Services.AddInfrastructure(connectionString, builder.Configuration);
 
 
@@ -45,7 +47,7 @@ app.UseSwaggerUI();
 app.UseCors("AllowAll");
 app.UseFastTechFoodsInfrastructure();
 
-app.MapCategoryEndpoints();
-app.MapProductEndpoints();
+// Mapear Controllers
+app.MapControllers();
 
 app.Run();

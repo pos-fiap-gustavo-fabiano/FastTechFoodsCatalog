@@ -51,6 +51,9 @@ spec:
           readOnly: true
         - name: tmp-volume
           mountPath: /tmp
+        - name: secrets-store-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
         securityContext:
           capabilities:
             add: ["SYS_RESOURCE"]
@@ -60,6 +63,12 @@ spec:
           name: fasttechfoods-catalog-api-config
       - name: tmp-volume
         emptyDir: {}
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "fasttechfoods-catalog-secrets"
 ---
 apiVersion: v1
 kind: Service

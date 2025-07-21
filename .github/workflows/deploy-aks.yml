@@ -10,7 +10,6 @@ env:
   CONTAINER_NAME: "fasttechfoods-catalog-api"
   RESOURCE_GROUP: "rg-hackathon"
   CLUSTER_NAME: "aks-hackathon"
-  DEPLOYMENT_MANIFEST_PATH: "k8s/deployment.yaml"
 
 jobs:
   test:
@@ -114,12 +113,15 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      - name: Deploys application
+      - name: Deploy Kubernetes manifests
         uses: Azure/k8s-deploy@v4
         with:
           namespace: fasttechfoods
           action: deploy
-          manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+          manifests: |
+            k8s/01-config-map.yaml
+            k8s/secret-provider-class.yaml
+            k8s/deployment.yaml
           images: |
             hackathonpostech.azurecr.io/fasttechfoods-catalog-api:latest
 

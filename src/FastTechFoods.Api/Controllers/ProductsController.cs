@@ -1,6 +1,7 @@
 using FastTechFoods.Application.DTOs;
 using FastTechFoods.Application.Interfaces;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastTechFoods.Api.Controllers
@@ -38,6 +39,7 @@ namespace FastTechFoods.Api.Controllers
 
         // POST /api/products
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] CreateProductRequest request, [FromServices] IValidator<CreateProductRequest> validator, CancellationToken ct)
         {
             var validation = await validator.ValidateAsync(request, ct);
@@ -50,6 +52,7 @@ namespace FastTechFoods.Api.Controllers
 
         // PUT /api/products/{id}
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] UpdateProductRequest request, [FromServices] IValidator<UpdateProductRequest> validator, CancellationToken ct)
         {
             var validation = await validator.ValidateAsync(request, ct);
@@ -64,6 +67,7 @@ namespace FastTechFoods.Api.Controllers
 
         // PATCH /api/products/{id}/availability
         [HttpPatch("{id:guid}/availability")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<ActionResult<ProductDto>> UpdateProductAvailability(Guid id, [FromBody] UpdateProductAvailabilityRequest request, CancellationToken ct)
         {
             var updated = await _productService.UpdateAvailabilityAsync(id, request.Availability, ct);
@@ -74,6 +78,7 @@ namespace FastTechFoods.Api.Controllers
 
         // DELETE /api/products/{id}
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteProduct(Guid id, CancellationToken ct)
         {
             var deleted = await _productService.DeleteAsync(id, ct);

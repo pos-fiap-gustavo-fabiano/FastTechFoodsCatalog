@@ -46,8 +46,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("AllowAll");
 app.UseFastTechFoodsInfrastructure();
-
-// Mapear Controllers
+app.UseFastTechFoodsSecurityAudit();
 app.MapControllers();
 
 app.Run();

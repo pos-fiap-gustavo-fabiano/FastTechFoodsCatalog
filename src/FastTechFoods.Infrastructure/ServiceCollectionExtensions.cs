@@ -37,7 +37,6 @@ public static class ServiceCollectionExtensions
 
     public static WebApplication UseFastTechFoodsInfrastructure(this WebApplication app)
     {
-        app.UseFastTechFoodsHealthChecksUI();
         app.UseFastTechFoodsPrometheus();
         return app;
     }

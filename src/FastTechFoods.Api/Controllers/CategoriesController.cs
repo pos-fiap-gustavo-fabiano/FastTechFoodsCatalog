@@ -1,6 +1,7 @@
 using FastTechFoods.Application.DTOs;
 using FastTechFoods.Application.Interfaces;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastTechFoods.Api.Controllers
@@ -36,6 +37,7 @@ namespace FastTechFoods.Api.Controllers
 
         // POST /api/categories
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] CreateCategoryRequest request, [FromServices] IValidator<CreateCategoryRequest> validator, CancellationToken ct)
         {
             var validation = await validator.ValidateAsync(request, ct);
@@ -48,6 +50,7 @@ namespace FastTechFoods.Api.Controllers
 
         // PUT /api/categories/{id}
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<ActionResult<CategoryDto>> UpdateCategory(Guid id, [FromBody] CreateCategoryRequest request, [FromServices] IValidator<CreateCategoryRequest> validator, CancellationToken ct)
         {
             var validation = await validator.ValidateAsync(request, ct);
@@ -62,6 +65,7 @@ namespace FastTechFoods.Api.Controllers
 
         // DELETE /api/categories/{id}
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken ct)
         {
             var deleted = await _categoryService.DeleteAsync(id, ct);

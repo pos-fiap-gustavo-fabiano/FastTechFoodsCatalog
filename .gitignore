@@ -418,7 +418,5 @@ FodyWeavers.xsd
 *.msp
 src/FastTechFoods.Api/Properties/launchSettings.json
 /src/FastTechFoods.Api/Properties/launchSettings.json
-k8s/catalog-api-secret.yaml
-k8s/00-catalog-api-secret.yaml
 k8s/cert-issuer.yaml
 k8s/ingress.yaml

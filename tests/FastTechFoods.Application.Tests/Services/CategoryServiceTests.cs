@@ -58,7 +58,6 @@ public class CategoryServiceTests
             Description = "Hot and cold drinks",
             IsActive = true
         };
-
         // Act
         var result = await _service.CreateAsync(request, CancellationToken.None);
 

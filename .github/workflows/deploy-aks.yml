@@ -120,8 +120,9 @@ jobs:
           action: deploy
           manifests: |
             k8s/01-config-map.yaml
-            k8s/deployment.yaml
             k8s/02-secret-provider-class.yaml
+            k8s/03-deployment.yaml
+            k8s/04-service.yaml
           images: |
             fasttechfoods.azurecr.io/fasttechfoods-catalog-api:latest
 

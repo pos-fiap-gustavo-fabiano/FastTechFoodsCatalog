@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: "hackathonpostech.azurecr.io"
+  AZURE_CONTAINER_REGISTRY: "fasttechfoods.azurecr.io"
   CONTAINER_NAME: "fasttechfoods-catalog-api"
   RESOURCE_GROUP: "rg-hackathon"
   CLUSTER_NAME: "aks-hackathon"
@@ -66,7 +66,7 @@ jobs:
       - name: Log in to Azure Container Registry
         uses: docker/login-action@v3
         with:
-          registry: hackathonpostech.azurecr.io
+          registry: fasttechfoods.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       # Builds and pushes an image up to your Azure Container Registry
@@ -120,10 +120,10 @@ jobs:
           action: deploy
           manifests: |
             k8s/01-config-map.yaml
-            k8s/secret-provider-class.yaml
             k8s/deployment.yaml
+            k8s/02-secret-provider-class.yaml
           images: |
-            hackathonpostech.azurecr.io/fasttechfoods-catalog-api:latest
+            fasttechfoods.azurecr.io/fasttechfoods-catalog-api:latest
 
       - name: Restart deployment to pull latest image
         run: |

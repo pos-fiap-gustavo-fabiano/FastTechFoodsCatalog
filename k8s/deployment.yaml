@@ -18,10 +18,12 @@ spec:
     metadata:
       labels:
         app: fasttechfoods-catalog-api
+        azure.workload.identity/use: "true"
     spec:
+      serviceAccountName: fasttechfoods-auth-workload-identity-sa
       containers:
       - name: fasttechfoods-catalog-api
-        image: hackathonpostech.azurecr.io/fasttechfoods-catalog-api:latest
+        image: fasttechfoods.azurecr.io/fasttechfoods-catalog-api:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

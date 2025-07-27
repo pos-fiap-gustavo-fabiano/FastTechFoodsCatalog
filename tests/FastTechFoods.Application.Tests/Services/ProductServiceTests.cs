@@ -8,6 +8,7 @@ using FastTechFoods.Application.Interfaces;
 using FastTechFoods.Application.Services;
 using FastTechFoods.Domain.Entities;
 using FastTechFoods.Domain.Repositories;
+using FastTechFoodsOrder.Shared.Results;
 using Moq;
 using Xunit;
 
@@ -50,14 +51,16 @@ public class ProductServiceTests
         var result = await _service.GetAllAsync(null, null, CancellationToken.None);
 
         // Assert
-        Assert.Equal(2, result.Count());
-        Assert.Contains(result, p => p.Name == "Burger" && p.Description == "Tasty");
-        Assert.Contains(result, p => p.Name == "Fries" && p.Description == "Crispy");
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.Equal(2, result.Value.Count());
+        Assert.Contains(result.Value, p => p.Name == "Burger" && p.Description == "Tasty");
+        Assert.Contains(result.Value, p => p.Name == "Fries" && p.Description == "Crispy");
     }
 
 
     [Fact]
-    public async Task GetByIdAsync_WhenNotFound_ReturnsNull()
+    public async Task GetByIdAsync_WhenNotFound_ReturnsFailure()
     {
         // Arrange
         _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -67,7 +70,8 @@ public class ProductServiceTests
         var result = await _service.GetByIdAsync(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
-        Assert.Null(result);
+        Assert.True(result.IsFailure);
+        Assert.Equal("Product not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -84,8 +88,9 @@ public class ProductServiceTests
         var result = await _service.GetByIdAsync(product.Id, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(product.Name, result.Name);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.Equal(product.Name, result.Value.Name);
     }
 
     [Fact]
@@ -119,11 +124,11 @@ public class ProductServiceTests
         Assert.Equal(request.Description, captured.Description);
         Assert.Equal(request.Price, captured.Price);
         Assert.Equal(request.CategoryId, captured.CategoryId);
-        Assert.Equal(result.Name, request.Name);
+        Assert.Equal(result.Value!.Name, request.Name);
     }
 
     [Fact]
-    public async Task CreateAsync_WhenCategoryNotExists_ThrowsException()
+    public async Task CreateAsync_WhenCategoryNotExists_ReturnsFailure()
     {
         // Arrange
         _categoryRepoMock.Setup(r => r.ExistsAsync(_categoryId1, It.IsAny<CancellationToken>()))
@@ -138,13 +143,16 @@ public class ProductServiceTests
             CategoryId = _categoryId1
         };
 
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => 
-            _service.CreateAsync(request, CancellationToken.None));
+        // Act
+        var result = await _service.CreateAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("CATEGORY_NOT_FOUND", result.ErrorCode);
     }
 
     [Fact]
-    public async Task UpdateAsync_WhenProductNotFound_ReturnsNull()
+    public async Task UpdateAsync_WhenProductNotFound_ReturnsFailure()
     {
         // Arrange
         _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -163,7 +171,8 @@ public class ProductServiceTests
         var result = await _service.UpdateAsync(Guid.NewGuid(), request, CancellationToken.None);
 
         // Assert
-        Assert.Null(result);
+        Assert.True(result.IsFailure);
+        Assert.Equal("Product not found", result.ErrorMessage);
         _repoMock.Verify(r => r.UpdateAsync(It.IsAny<Product>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -193,9 +202,10 @@ public class ProductServiceTests
         var result = await _service.UpdateAsync(product.Id, request, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(request.Name, result.Name);
-        Assert.Equal(request.CategoryId, result.CategoryId);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.Equal(request.Name, result.Value.Name);
+        Assert.Equal(request.CategoryId, result.Value.CategoryId);
         _repoMock.Verify(r => r.UpdateAsync(product, It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -215,7 +225,7 @@ public class ProductServiceTests
         var result = await _service.DeleteAsync(productId, CancellationToken.None);
 
         // Assert
-        Assert.True(result);
+        Assert.True(result.IsSuccess);
         _repoMock.Verify(r => r.GetByIdAsync(productId, It.IsAny<CancellationToken>()), Times.Once);
         _repoMock.Verify(r => r.DeleteAsync(product, It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -232,7 +242,7 @@ public class ProductServiceTests
         var result = await _service.DeleteAsync(product.Id, CancellationToken.None);
 
         // Assert
-        Assert.False(result);
+        Assert.True(result.IsFailure);
     }
 
     [Fact]
@@ -249,8 +259,9 @@ public class ProductServiceTests
         var result = await _service.UpdateAvailabilityAsync(product.Id, false, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.False(result.Availability);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.False(result.Value.Availability);
         _repoMock.Verify(r => r.UpdateAsync(product, It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -265,6 +276,7 @@ public class ProductServiceTests
         var result = await _service.UpdateAvailabilityAsync(Guid.NewGuid(), false, CancellationToken.None);
 
         // Assert
-        Assert.Null(result);
+        Assert.True(result.IsFailure);
+        Assert.Equal("Product not found", result.ErrorMessage);
     }
 }

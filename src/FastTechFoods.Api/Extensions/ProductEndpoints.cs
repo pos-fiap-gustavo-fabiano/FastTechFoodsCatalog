@@ -56,7 +56,10 @@ public static class ProductEndpoints
                     return Results.BadRequest(validation.Errors);
 
                 var result = await service.CreateAsync(productRequest, ct);
-                return Results.Created($"/api/products/{result.Id}", result);
+                if (result.IsFailure)
+                    return Results.BadRequest(result.ErrorMessage);
+                
+                return Results.Created($"/api/products/{result.Value!.Id}", result.Value);
             })
             .WithName("CreateProduct")
             .WithSummary("Criar novo produto")
@@ -110,8 +113,8 @@ public static class ProductEndpoints
             IProductService service, 
             CancellationToken ct) =>
             {
-                var deleted = await service.DeleteAsync(id, ct);
-                return deleted ? Results.NoContent() : Results.NotFound();
+                var result = await service.DeleteAsync(id, ct);
+                return result.IsSuccess ? Results.NoContent() : Results.NotFound();
             })
             .WithName("DeleteProduct")
             .WithSummary("Deletar produto")

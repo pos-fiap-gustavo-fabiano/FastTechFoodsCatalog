@@ -48,5 +48,6 @@ app.UseCors("AllowAll");
 app.UseFastTechFoodsInfrastructure();
 app.UseFastTechFoodsSecurityAudit();
 app.MapControllers();
+app.UseFastTechFoodsInfrastructure();
 
 app.Run();

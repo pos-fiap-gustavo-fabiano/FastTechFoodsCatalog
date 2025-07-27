@@ -3,7 +3,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - FastTechFoodsCatalog
 on:
   push:
     branches:
-      - main
+      - disabled
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
         run: dotnet build src/FastTechFoods.Api/FastTechFoods.Api.csproj --configuration Release --no-restore
 
       - name: Run unit tests
-        # Altere para o projeto de testes correto se necess·rio
+        # Altere para o projeto de testes correto se necess√°rio
         run: dotnet test --no-build --configuration Release
 
       - name: Publish API

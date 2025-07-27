@@ -47,13 +47,5 @@ data:
         "Properties": {
           "Application": "FastTechFoodsCatalog.Api",
         }
-      },
-      "HealthChecks-UI": {
-        "HealthChecks": [
-          {
-            "Name": "FastTechFoodsCatalog.Api",
-            "Uri": "http://localhost:8080/health"
-          }
-        ]
       }
     }

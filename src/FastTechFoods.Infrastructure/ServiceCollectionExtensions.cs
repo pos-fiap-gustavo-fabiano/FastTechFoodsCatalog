@@ -21,8 +21,11 @@ public static class ServiceCollectionExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
+
         services.AddFastTechFoodsObservabilityWithSerilog(configuration);
+        services.AddFastTechFoodsPrometheus(configuration);
         services.AddFastTechFoodsHealthChecks<AppDbContext>(configuration);
+
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductRepository, ProductRepository>();

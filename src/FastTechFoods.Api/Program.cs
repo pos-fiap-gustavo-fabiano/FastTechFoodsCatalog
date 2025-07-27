@@ -49,5 +49,7 @@ app.UseFastTechFoodsInfrastructure();
 app.UseFastTechFoodsSecurityAudit();
 app.MapControllers();
 app.UseFastTechFoodsInfrastructure();
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/ready");
 
 app.Run();

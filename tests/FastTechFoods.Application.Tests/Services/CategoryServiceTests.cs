@@ -47,7 +47,7 @@ public class CategoryServiceTests
     public async Task CreateAsync_CallsRepositoryAndReturnsDto()
     {
         // Arrange
-        Category? captured = null;
+        Category captured = null;
         _repoMock.Setup(r => r.CreateAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()))
             .Callback<Category, CancellationToken>((c, _) => captured = c)
             .ReturnsAsync((Category c, CancellationToken _) => c);

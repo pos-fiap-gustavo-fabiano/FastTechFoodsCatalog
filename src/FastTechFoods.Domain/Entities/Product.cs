@@ -11,6 +11,7 @@ public class Product
         Availability = availability;
         ImageUrl = imageUrl;
         CategoryId = categoryId;
+        CreatedDate = DateTime.UtcNow;
     }
 
     public Guid Id { get; private set; }
@@ -21,7 +22,7 @@ public class Product
     public string? ImageUrl { get; private set; }
     public Guid CategoryId { get; private set; }
     public DateTime CreatedDate { get; private set; }
-    public virtual Category Category { get; private set; }
+    public virtual Category? Category { get; private set; }
 
     public void Update(string name, string description, decimal price, bool availability, string? imageUrl, Guid categoryId)
     {
@@ -29,7 +30,7 @@ public class Product
         Description = description;
         Price = price;
         Availability = availability;
-        imageUrl = imageUrl;
+        ImageUrl = imageUrl;
         CategoryId = categoryId;
     }
 

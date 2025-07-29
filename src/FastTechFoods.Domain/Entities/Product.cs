@@ -2,21 +2,7 @@ namespace FastTechFoods.Domain.Entities;
 
 public class Product
 {
-    public Guid Id { get; private set; }
-    public string Name { get; private set; } = string.Empty;
-    public string Description { get; private set; } = string.Empty;
-    public decimal Price { get; private set; }
-    public bool Availability { get; private set; }
-    public string? ImageUrl { get; set; }
-    public Guid CategoryId { get; private set; }
-    public DateTime CreatedDate { get; private set; }
-
-    // Navigation property
-    public virtual Category Category { get; private set; } = null!;
-
-    protected Product() { }
-
-    public Product(string name, string description, decimal price, bool availability, string imageUrl, Guid categoryId)
+    public Product(string name, string description, decimal price, bool availability, string? imageUrl, Guid categoryId)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -25,15 +11,25 @@ public class Product
         Availability = availability;
         ImageUrl = imageUrl;
         CategoryId = categoryId;
-        CreatedDate = DateTime.UtcNow;
     }
 
-    public void Update(string name, string description, decimal price, bool availability, Guid categoryId)
+    public Guid Id { get; private set; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public decimal Price { get; private set; }
+    public bool Availability { get; private set; }
+    public string? ImageUrl { get; private set; }
+    public Guid CategoryId { get; private set; }
+    public DateTime CreatedDate { get; private set; }
+    public virtual Category Category { get; private set; }
+
+    public void Update(string name, string description, decimal price, bool availability, string? imageUrl, Guid categoryId)
     {
         Name = name;
         Description = description;
         Price = price;
         Availability = availability;
+        imageUrl = imageUrl;
         CategoryId = categoryId;
     }
 
@@ -45,5 +41,10 @@ public class Product
     public void UpdateCategory(Guid categoryId)
     {
         CategoryId = categoryId;
+    }
+
+    public void SetImageUrl(string imageUrl)
+    {
+        ImageUrl = imageUrl;
     }
 }

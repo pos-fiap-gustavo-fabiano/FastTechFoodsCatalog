@@ -85,8 +85,13 @@ public class ProductService : IProductService
             var product = await _repository.GetByIdAsync(id, cancellationToken);
             if (product is null)
                 return Result<ProductDto>.Failure("Product not found", "PRODUCT_NOT_FOUND");
+            string? imageUrl = null;
 
-            product.Update(request.Name, request.Description, request.Price, request.Availability, request.CategoryId);
+            if (request.Image != null)
+            {
+                imageUrl = await _blobStorageService.UploadImageAsync(request.Image, "fasttechfoods", cancellationToken);
+            }
+            product.Update(request.Name, request.Description, request.Price, request.Availability, imageUrl ?? product.ImageUrl, request.CategoryId);
             await _repository.UpdateAsync(product, cancellationToken);
             return Result<ProductDto>.Success(ToDto(product));
         }

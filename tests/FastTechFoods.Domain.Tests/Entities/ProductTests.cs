@@ -27,7 +27,7 @@ public class ProductTests
         var categoryId = Guid.NewGuid();
         var product = new Product("Burger", "Tasty", 10m, true,"", categoryId);
 
-        product.Update("Fries", "Crispy", 5m, false, categoryId);
+        product.Update("Fries", "Crispy", 5m, false, "", categoryId);
 
         Assert.Equal("Fries", product.Name);
         Assert.Equal("Crispy", product.Description);
